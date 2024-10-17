@@ -17,6 +17,7 @@
         <field name="expected_price" />
         <field name="selling_price" />
         <field name="date_availability" />
+        <field name="property_type_id" />
       </list>
     </field>
   </record>
@@ -38,6 +39,7 @@
             <group>
               <field name="expected_price" />
               <field name="selling_price" />
+              <field name="property_type_id" />
             </group>
           </group>
           <notebook>
@@ -52,6 +54,14 @@
                   <field name="garden" />
                   <field name="garden_area" />
                   <field name="garden_orientation" />
+                </group>
+              </group>
+            </page>
+            <page string="Other Info">
+              <group>
+                <group>
+                  <field name="salesman" />
+                  <field name="buyer" />
                 </group>
               </group>
             </page>
@@ -72,8 +82,10 @@
         <field name="bedrooms" />
         <field name="living_area" />
         <field name="facades" />
-        <filter name="available_properties" string="Available Properties" domain="['|', ('state', '=', 'new'), ('state', '=', 'offer_received')]" />
-        <filter string="Postcode" name='postcode' context="{'group_by':'postcode'}"/>
+        <field name="property_type_id" />
+        <filter name="available_properties" string="Available Properties"
+          domain="['|', ('state', '=', 'new'), ('state', '=', 'offer_received')]" />
+        <filter string="Postcode" name='postcode' context="{'group_by':'postcode'}" />
       </search>
     </field>
   </record>
