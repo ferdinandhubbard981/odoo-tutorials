@@ -4,7 +4,6 @@ from dateutil.relativedelta import relativedelta
 
 class Property(models.Model):
     _name = "estate.property"
-    _description = "the properties of an estate object"
     name = fields.Char("Title", required=True)
     description = fields.Text()
     postcode = fields.Char("Postcode")
@@ -24,6 +23,7 @@ class Property(models.Model):
     salesman = fields.Many2one("res.users", string="Salesman", default=lambda self: self.env.user)
     buyer = fields.Many2one("res.partner", string="Buyer", copy=False)
     tags = fields.Many2many("estate.property.tag", string="Property Tags")
+    offer_ids = fields.One2many("estate.property.offer", "property_id")
 
     def _in_three_months(self):
         return fields.Date.today() + relativedelta(months=3)
