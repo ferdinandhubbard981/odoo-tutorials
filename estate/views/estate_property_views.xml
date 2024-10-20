@@ -41,6 +41,7 @@
               <field name="selling_price" />
               <field name="property_type_id" />
             </group>
+        <field name="tags" widget="many2many_tags"/>
           </group>
           <notebook>
             <page string="Description">

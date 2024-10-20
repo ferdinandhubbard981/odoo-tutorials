@@ -22,7 +22,8 @@ class Property(models.Model):
     state = fields.Selection([("new", "New"), ("offer_received", "Offer Received"), ("offer_accepted", "Offer Accepted"), ("sold", "Sold"), ("cancelled", "Cancelled")], default="new")
     property_type_id = fields.Many2one("estate.property.type", string="Property Type")
     salesman = fields.Many2one("res.users", string="Salesman", default=lambda self: self.env.user)
-    buyer = fields.Many2one("res.partner", "Buyer", copy=False)
+    buyer = fields.Many2one("res.partner", string="Buyer", copy=False)
+    tags = fields.Many2many("estate.property.tag", string="Property Tags")
 
     def _in_three_months(self):
         return fields.Date.today() + relativedelta(months=3)
