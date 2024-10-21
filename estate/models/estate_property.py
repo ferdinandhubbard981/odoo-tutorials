@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
 
 
@@ -24,6 +24,23 @@ class Property(models.Model):
     buyer = fields.Many2one("res.partner", string="Buyer", copy=False)
     tags = fields.Many2many("estate.property.tag", string="Property Tags")
     offer_ids = fields.One2many("estate.property.offer", "property_id")
+    total_area = fields.Float(compute="_compute_total_area", name="Total Area (sqm)", readonly=True)
+    best_offer = fields.Float(compute="_compute_best_offer", name="Best Offer", readonly=True)
 
     def _in_three_months(self):
         return fields.Date.today() + relativedelta(months=3)
+
+    @api.depends("living_area", "garden_area")
+    def _compute_total_area(self):
+        for record in self:
+            record.total_area = record.living_area + record.garden_area
+
+    @api.depends("offer_ids")
+    def _compute_best_offer(self):
+        for record in self:
+            best_offer = 0
+            offer_ids = record.mapped("offer_ids")
+            for offer in offer_ids:
+                if offer.price > best_offer:
+                    best_offer = offer.price
+            record.best_offer = best_offer
