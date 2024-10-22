@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 from dateutil.relativedelta import relativedelta
 
 
@@ -18,7 +19,7 @@ class Property(models.Model):
     garden_area = fields.Integer("Garden Area (sqm)")
     garden_orientation = fields.Selection([("north", "North"), ("east", "East"), ("south", "South"), ("west", "West")])
     active = fields.Boolean(default=True)
-    state = fields.Selection([("new", "New"), ("offer_received", "Offer Received"), ("offer_accepted", "Offer Accepted"), ("sold", "Sold"), ("cancelled", "Cancelled")], default="new")
+    state = fields.Selection([("new", "New"), ("offer_received", "Offer Received"), ("offer_accepted", "Offer Accepted"), ("sold", "Sold"), ("cancelled", "Cancelled")], default="new", string="Status")
     property_type_id = fields.Many2one("estate.property.type", string="Property Type")
     salesman = fields.Many2one("res.users", string="Salesman", default=lambda self: self.env.user)
     buyer = fields.Many2one("res.partner", string="Buyer", copy=False)
@@ -53,3 +54,17 @@ class Property(models.Model):
         else:
             self.garden_orientation = ""
             self.garden_area = 0
+
+    def action_sell_property(self):
+        for record in self:
+            if record.state == "cancelled":
+                raise UserError("Cancelled properties cannot be sold.")
+            record.state = "sold"
+        return True
+
+    def action_cancel_property(self):
+        for record in self:
+            if record.state == "sold":
+                raise UserError("Sold properties cannot be cancelled")
+            record.state = "cancelled"
+        return True
